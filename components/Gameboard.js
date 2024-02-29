@@ -36,7 +36,7 @@ export default Gameboard = ({ navigation, route }) => {
     const [selectedDicePoints, setSelectedDicePoints] = useState(new Array(MAX_SPOT).fill(false));
     const [dicePointsTotal, setDicePointsTotal] = useState(new Array(MAX_SPOT).fill(0));
     //const [scores, setScores] = useState([]);
-    //const [bonusPoints, SetBonusPoints] = useState(0);
+    const [bonusPoints, SetBonusPoints] = useState(0);
     //one way to handle with useeffects
 
     //this one is for passing the player name to the screen
@@ -121,7 +121,7 @@ export default Gameboard = ({ navigation, route }) => {
     }
 
 
-    //Call the function for calculating points inside text component for replasing the zero. function call to get the sum there.
+
     const pointsRow = [];
     for (let spot = 0; spot < MAX_SPOT; spot++) {
         pointsRow.push(
@@ -171,7 +171,32 @@ export default Gameboard = ({ navigation, route }) => {
         return selectedDices[i] ? '#F8DFD4' : '#C69774';
     }
 
+//3 taso
     const selectDicePoints = (i) => {
+        if (nbrOfThrowsLeft === 0) {
+            let selectedPoints = [...selectedDicePoints];
+            let points = [...dicePointsTotal];
+            if (!selectedDicePoints[i]) {
+                selectedPoints[i] = true;
+                let nbrOfDices = diceSpots.reduce((total, x) => (x === (i + 1) ? total + 1 : total), 0);
+                points[i] = nbrOfDices * (i + 1);
+                setDicePointsTotal(points);
+            }
+            else {
+                setStatus('You already selected points for ' + (i + 1));
+                return points[i];
+            }
+            setSelectedDicePoints(selectedPoints);
+            return points[i];
+        }
+        else {
+            setStatus('Throw 3 times before setting points.')
+        }
+    }
+
+
+//1 taso. toimii
+    /*const selectDicePoints = (i) => {
         let selected = [...selectedDices];
         let selectedPoints = [...selectedDicePoints];
         let points = [...dicePointsTotal];
@@ -182,7 +207,7 @@ export default Gameboard = ({ navigation, route }) => {
         setSelectedDices(selected);
         setSelectedDicePoints(selectedPoints);  
         return points[i];
-    }
+    }*/
 
     function getSpotTotal(i) {
         return dicePointsTotal[i];
@@ -239,19 +264,21 @@ export default Gameboard = ({ navigation, route }) => {
                 <ScrollView>
                 <Header />
                 <View >
-                    <FontAwesome6 name="dice" size={50} color="black" style={style.icon} />
-                    <Text style={style.text}>{status}</Text>
+                    
+                    
                     <Container fluid>
+                    <FontAwesome6 name="dice" size={50} color="black" style={style.icon} />
                         <Row>{dicesRow}</Row>
                     </Container>
                     <Text style={style.text2}>Throws left: {nbrOfThrowsLeft}</Text>
+                    <Text style={style.text}>{status}</Text>
                     <Pressable
                         onPress={() => throwDices()}
                         style={style.button}>
                         <Text style={style.buttonText}>THROW DICES</Text>
                     </Pressable>
                     <Text style={style.textTotal}>Total: {getDicePointsTotal()}</Text>
-                    <Text style={style.text}>You are ... points away from bonus</Text>
+                    <Text style={style.text}>You are {BONUS_POINTS_LIMIT} points away from bonus</Text>
 
                     <Container fluid>
                         <Row>{pointsRow}</Row>
