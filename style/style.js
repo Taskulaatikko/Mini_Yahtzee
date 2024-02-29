@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-//import { horizontalScale, verticalScale, moderateScale } from './Metrics';
 
 
 export default style = StyleSheet.create({
@@ -13,7 +12,7 @@ export default style = StyleSheet.create({
 },
 button: {
     alignItems: 'center',
-    backgroundColor: '#ffe993',
+    backgroundColor: '#FFEFE8',
     borderColor: '#000000',
     borderBottomLeftRadius: 20,
     borderWidth: 1,
@@ -26,7 +25,7 @@ button: {
 },
 button2: {
     alignItems: 'center',
-    backgroundColor: '#ffe993',
+    backgroundColor: '#FFEFE8',
     borderColor: '#000000',
     borderBottomLeftRadius: 20,
     borderWidth: 1,
@@ -37,23 +36,16 @@ button2: {
     marginTop: 20,
     padding: 10,
 },
+buttonText: {
+    color: 'black',
+    fontSize: 20,
+},
 container: {
     backgroundColor: '#fff',
     flex: 1,
 },
-/*container2: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    height: verticalScale(70),
-    width: horizontalScale(150),
-},
-containerText: {
-    fontSize: moderateScale(18),
-},*/
 footer: {
-    backgroundColor: '#213555',
+    backgroundColor: '#637E76',
     flexDirection: 'row',
     marginTop: 20,
 },
@@ -73,7 +65,7 @@ gameinfo: {
     textAlign: 'center',
 },
 header: {
-    backgroundColor: '#213555',
+    backgroundColor: '#637E76',
     flexDirection: 'row',
     marginBottom: 15,
     marginTop: 30,
@@ -97,11 +89,17 @@ row: {
 text: {
     fontSize: 15,
     margin: 15,
+    textAlign: 'center',
 },
 text2: {
     fontSize: 20,
     margin: 15,
     textAlign: 'center',
+},
+textTotal: {
+  fontSize: 25,
+  margin: 15,
+  textAlign: 'center',
 },
 textinput: {
     backgroundColor: '#F0F0F0',
