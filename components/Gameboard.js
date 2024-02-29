@@ -38,7 +38,6 @@ export default Gameboard = ({ navigation, route }) => {
     //const [scores, setScores] = useState([]);
     const [bonusPoints, SetBonusPoints] = useState(0);
     //one way to handle with useeffects
-
     //this one is for passing the player name to the screen
     const getScoreboardDate = () => {
         if (playerName !== '') {
@@ -126,8 +125,8 @@ export default Gameboard = ({ navigation, route }) => {
     for (let spot = 0; spot < MAX_SPOT; spot++) {
         pointsRow.push(
             <Col key={"pointsRow" + spot}>
-                <Text key={"pointsRow" + spot}> 
-                {getSpotTotal(spot)}
+                <Text key={"pointsRow" + spot}>
+                    {getSpotTotal(spot)}
                 </Text>
             </Col>
         )
@@ -171,20 +170,25 @@ export default Gameboard = ({ navigation, route }) => {
         return selectedDices[i] ? '#F8DFD4' : '#C69774';
     }
 
-//3 taso
+    //3 taso
     const selectDicePoints = (i) => {
         if (nbrOfThrowsLeft === 0) {
             let selectedPoints = [...selectedDicePoints];
             let points = [...dicePointsTotal];
             if (!selectedDicePoints[i]) {
+                selectedPoints.fill(false);
                 selectedPoints[i] = true;
                 let nbrOfDices = diceSpots.reduce((total, x) => (x === (i + 1) ? total + 1 : total), 0);
+                points.fill(0); // Reset all points
                 points[i] = nbrOfDices * (i + 1);
                 setDicePointsTotal(points);
             }
             else {
-                setStatus('You already selected points for ' + (i + 1));
-                return points[i];
+             // Deselect the clicked point
+             selectedPoints[i] = false;
+             // Reset the points to 0 for the deselected point
+             points[i] = 0;
+             setDicePointsTotal(points);
             }
             setSelectedDicePoints(selectedPoints);
             return points[i];
@@ -195,7 +199,7 @@ export default Gameboard = ({ navigation, route }) => {
     }
 
 
-//1 taso. toimii
+    //1 taso. toimii
     /*const selectDicePoints = (i) => {
         let selected = [...selectedDices];
         let selectedPoints = [...selectedDicePoints];
@@ -249,25 +253,25 @@ export default Gameboard = ({ navigation, route }) => {
 
 
     function getDicePointsColor(i) {
-        if (selectedDicePoints[i] && !gameEndStatus){
+        if (selectedDicePoints[i] && !gameEndStatus) {
             return '#F8DFD4';
         }
         else {
             return '#C69774';
         }
-            
+
     }
 
 
     return (
         <>
-                <ScrollView>
+            <ScrollView>
                 <Header />
                 <View >
-                    
-                    
+
+
                     <Container fluid>
-                    <FontAwesome6 name="dice" size={50} color="black" style={style.icon} />
+                        <FontAwesome6 name="dice" size={50} color="black" style={style.icon} />
                         <Row>{dicesRow}</Row>
                     </Container>
                     <Text style={style.text2}>Throws left: {nbrOfThrowsLeft}</Text>
@@ -291,7 +295,7 @@ export default Gameboard = ({ navigation, route }) => {
                     <Text style={style.text2}>Player: {playerName}</Text>
                 </View>
                 <Footer />
-                </ScrollView>
+            </ScrollView>
         </>
     )
 }
