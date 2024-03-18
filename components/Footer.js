@@ -6,7 +6,7 @@ import React from 'react';
 export default Footer = () => {
     return (
         <View style={styles.footer}>
-        <Text style={styles.author}>Author: Sari Haataja</Text>
+        <Text style={styles.author}>By: Sari Haataja</Text>
         </View>
     );
     }

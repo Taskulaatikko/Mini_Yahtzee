@@ -5,7 +5,7 @@ import React from 'react';
 
 export default Header = () => {
     return (
-        <View style={styles.header}>
+        <View style={styles.header3}>
             <Text style={styles.title}>Mini-Yahtzee</Text>
         </View>
     );

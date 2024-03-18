@@ -1,47 +1,104 @@
+import React, { useState, useEffect } from 'react';
 import { Text, View, Pressable } from 'react-native';
-import styles from '../style/style';
-import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import style from '../style/style';
-import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView } from 'react-native';
+import { DataTable } from 'react-native-paper';
 
 
-export default Scoreboard = () => {
-    const [scoreboard, setScoreboard] = useState([]);
-    const [playerName, setPlayerName] = useState('');
-    const [playerPoints, setPlayerPoints] = useState(0);
-    
-    const ClearPoints = () => {
-        if (scoreboard.length > 0 === 'Scoreboard is empty') {
-            setScoreboard([]);
+export default function Scoreboard({ navigation }) {
+
+    const [topScores, setTopScores] = useState([]);
+    const [status, setStatus] = useState('Scoreboard is empty');
+
+    useEffect(() => {
+        getTopScores();
+    }, []);
+
+    //Function to fetch top scores from AsyncStorage
+    const getTopScores = async () => {
+        try {
+            const scores = await AsyncStorage.getItem('@scores');
+            if (scores) {
+                const parsedScores = JSON.parse(scores);
+                if (Array.isArray(parsedScores)) {
+                    // Create a map to store the top scores for each player
+                    const topScoresMap = new Map();
+                    parsedScores.forEach(score => {
+                        const { player, points } = score;
+                        if (!topScoresMap.has(player)) {
+                            topScoresMap.set(player, []);
+                        }
+                        const playerScores = topScoresMap.get(player);
+                        playerScores.push(score);
+                        // Sort scores for each player by points in descending order
+                        playerScores.sort((a, b) => b.points - a.points);
+                        // Keep only the top 5 scores for each player
+                        topScoresMap.set(player, playerScores.slice(0, 5));
+                    });
+                    // Flatten the map values to get the top 5 scores overall
+                    const topScoresArray = Array.from(topScoresMap.values()).flat();
+                    // Sort the overall top scores by points in descending order
+                    topScoresArray.sort((a, b) => b.points - a.points);
+                    // Keep only the top 5 scores overall
+                    const top5Scores = topScoresArray.slice(0, 5);
+                    setTopScores(top5Scores);
+                } else {
+                    console.error('Error fetching scores: Scores is not an array');
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching scores: ', error);
         }
-    }
+    };
 
 
-    const topData = [
-        { player: 'Sari', points: 150 },
-        { player: 'Matti', points: 100 },
-        { player: 'Teppo', points: 50 },
-        { player: 'Maija', points: 40 },
-        { player: 'Liisa', points: 30 },
-    ];
 
+    //Function to clear the scoreboard
+    const clearScoreboard = async () => {
+        try {
+            await AsyncStorage.removeItem('@scores');
+            setTopScores([]);
+        } catch (error) {
+            console.error('Error clearing scoreboard: ', error);
+        }
+    };
 
+    // Use useFocusEffect to refetch top scores when component gains focus
+    useFocusEffect(
+        React.useCallback(() => {
+            getTopScores();
+        }, [])
+    );
 
     return (
-        <View >
-            <MaterialIcons name="view-list" size={50} color="black" style={style.icon} />
-            <Text style={style.header2}>TOP 5</Text>
-            <Text style={style.text}>1. {topData[0].player} {topData[0].points} points</Text>
-            <Text style={style.text}>2. {topData[1].player} {topData[1].points} points</Text>
-            <Text style={style.text}>3. {topData[2].player} {topData[2].points} points</Text>
-            <Text style={style.text}>4. {topData[3].player} {topData[3].points} points</Text>
-            <Text style={style.text}>5. {topData[4].player} {topData[4].points} points</Text>
-            <Pressable
-                onPress={() => ClearPoints(true)}
-                style={style.button}>
-                <Text style={style.buttonText}>Clear Scoreboard</Text>
-            </Pressable>
-        </View>
+        <ScrollView>
+            <View>
+
+                <MaterialIcons name="view-list" size={50} color="black" style={style.icon} />
+                <Text style={style.text6}>Top 5 Scores</Text>
+                {topScores.length === 0 ? (
+                    <Text style={style.text}>{status}</Text>
+                ) : null}
+
+                <DataTable style={style.dataRow}>
+                    {topScores.map((score, index) => (
+                        <DataTable.Row key={index}>
+                            <DataTable.Cell style={style.dataCellNum}>{index + 1}. </DataTable.Cell>
+                            <DataTable.Cell style={style.dataCellName}>{score.player}</DataTable.Cell>
+                            <DataTable.Cell style={style.dataCell}>{score.date}</DataTable.Cell>
+                            <DataTable.Cell style={style.dataCell} numeric>{score.points}</DataTable.Cell>
+                        </DataTable.Row>
+                    ))}
+                </DataTable>
+                <Pressable onPress={clearScoreboard} style={style.button}>
+                    <Text style={style.buttonText}>Clear Scoreboard</Text>
+                </Pressable>
+            </View>
+        </ScrollView>
     );
+
+
 }

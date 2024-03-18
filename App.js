@@ -15,6 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -39,8 +40,8 @@ export default function App() {
             // You can return any component that you like here!
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#637E76',
-          tabBarInactiveTintColor: '#C69774',
+          tabBarActiveTintColor: '#2D3250',
+          tabBarInactiveTintColor: '#FFBE98',
         })}
       >
         <Tab.Screen name="Home" component={Home}

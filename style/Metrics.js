@@ -1,4 +1,3 @@
-/*Metrics.js
 import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -8,6 +7,6 @@ const guidelineBaseHeight = 812;
 
 const horizontalScale = (size) => (width / guidelineBaseWidth) * size;
 const verticalScale = (size) => (height / guidelineBaseHeight) * size;
-const moderateScale = (size, factor = 2.0) => size + (horizontalScale(size) - size) * factor;
+const moderateScale = (size, factor = 0.2) => size + (horizontalScale(size) - size) * factor;
 
-export { horizontalScale, verticalScale, moderateScale };*/
+export { horizontalScale, verticalScale, moderateScale };
