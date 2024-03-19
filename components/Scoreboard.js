@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import Header from './Header';
+import Footer from './Footer';
 
 
 export default function Scoreboard({ navigation }) {
@@ -38,11 +40,8 @@ export default function Scoreboard({ navigation }) {
                         // Keep only the top 5 scores for each player
                         topScoresMap.set(player, playerScores.slice(0, 5));
                     });
-                    // Flatten the map values to get the top 5 scores overall
                     const topScoresArray = Array.from(topScoresMap.values()).flat();
-                    // Sort the overall top scores by points in descending order
                     topScoresArray.sort((a, b) => b.points - a.points);
-                    // Keep only the top 5 scores overall
                     const top5Scores = topScoresArray.slice(0, 5);
                     setTopScores(top5Scores);
                 } else {
@@ -55,8 +54,6 @@ export default function Scoreboard({ navigation }) {
     };
 
 
-
-    //Function to clear the scoreboard
     const clearScoreboard = async () => {
         try {
             await AsyncStorage.removeItem('@scores');
@@ -66,17 +63,19 @@ export default function Scoreboard({ navigation }) {
         }
     };
 
-    // Use useFocusEffect to refetch top scores when component gains focus
+
     useFocusEffect(
         React.useCallback(() => {
             getTopScores();
         }, [])
     );
 
+
+
     return (
         <ScrollView>
+            <Header style={style.header} />
             <View>
-
                 <MaterialIcons name="view-list" size={50} color="black" style={style.icon} />
                 <Text style={style.text6}>Top 5 Scores</Text>
                 {topScores.length === 0 ? (
@@ -97,6 +96,7 @@ export default function Scoreboard({ navigation }) {
                     <Text style={style.buttonText}>Clear Scoreboard</Text>
                 </Pressable>
             </View>
+            <Footer style={style.footer} />
         </ScrollView>
     );
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-
+import { horizontalScale, moderateScale, verticalScale } from './Metrics';
 
 export default style = StyleSheet.create({
     author: {
@@ -17,11 +17,13 @@ export default style = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginLeft: 60,
-        marginRight: 60,
-        marginTop: 25,
-        marginBottom: 20,
-        padding: 10,
+        marginLeft: horizontalScale(35),
+        marginRight: horizontalScale(60),
+        marginTop: verticalScale(40),
+        marginBottom: verticalScale(30),
+        padding: moderateScale(8),
+        width: horizontalScale(300),
+
     },
     button2: {
         alignItems: 'center',
@@ -31,14 +33,17 @@ export default style = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginLeft: 60,
-        marginRight: 60,
-        marginTop: 20,
-        padding: 10,
+        marginLeft: horizontalScale(35),
+        marginRight: horizontalScale(60),
+        marginTop: verticalScale(40),
+        marginBottom: verticalScale(20),
+        padding: moderateScale(8),
+        width: horizontalScale(300),
     },
     buttonText: {
         color: '#ffffff',
         fontSize: 20,
+        fontSize: moderateScale(18),
     },
     bonuspointsInfo: {
         marginTop: 20,
@@ -46,12 +51,15 @@ export default style = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         flex: 1,
+        height: verticalScale(70),
+        width: horizontalScale(380),
     },
 
     dataRow: {
         backgroundColor: '#FEECE2',
-        marginTop: 20,
-        marginBottom: 20,
+        marginTop: verticalScale(5),
+        marginBottom: verticalScale(10),
+        width: horizontalScale(370),
     },
     dataCellNum: {
         flex: 0,
@@ -66,6 +74,8 @@ export default style = StyleSheet.create({
         backgroundColor: '#2D3250',
         flexDirection: 'row',
         marginTop: 30,
+        height: verticalScale(50),
+        marginTop: verticalScale(10),
     },
     flex: {
         flexDirection: 'row',
@@ -86,6 +96,8 @@ export default style = StyleSheet.create({
         backgroundColor: '#FFBE98',
         flexDirection: 'row',
         marginBottom: 15,
+        height: verticalScale(40),
+        fontSize: moderateScale(90),
     },
     header2: {
         flexDirection: 'row',
@@ -93,11 +105,15 @@ export default style = StyleSheet.create({
         marginBottom: 10,
         marginTop: 15,
         textAlign: 'center',
+        height: verticalScale(50),
+        fontSize: moderateScale(20),
     },
     header3: {
         backgroundColor: '#2D3250',
         flexDirection: 'row',
         marginBottom: 20,
+        height: verticalScale(60),
+        fontSize: moderateScale(10),
     },
     icon: {
         textAlign: 'center',
@@ -113,6 +129,10 @@ export default style = StyleSheet.create({
         marginBottom: 10,
         color: '#000000',
         textAlign: 'center',
+        marginLeft: horizontalScale(7),
+        marginRight: horizontalScale(12),
+        padding: horizontalScale(5),
+        fontSize: moderateScale(20),
     },
     text2: {
         fontSize: 20,
@@ -121,7 +141,8 @@ export default style = StyleSheet.create({
         margin: 8,
         textAlign: 'center',
         color: '#000000',
-
+        marginTop: verticalScale(10),
+        fontSize: moderateScale(20),
     },
     text3: {
         fontSize: 20,
@@ -136,11 +157,14 @@ export default style = StyleSheet.create({
         marginBottom: 10,
         marginTop: 45,
         textAlign: 'center',
+        marginTop: verticalScale(20),
+        fontSize: moderateScale(20),
     },
     text5: {
         fontSize: 20,
-        marginTop: 10,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginTop: verticalScale(20),
+        fontSize: moderateScale(19),
     },
     text6: {
         fontSize: 20,
@@ -149,7 +173,8 @@ export default style = StyleSheet.create({
         margin: 8,
         textAlign: 'center',
         color: '#000000',
-
+        marginTop: verticalScale(20),
+        fontSize: moderateScale(19),
     },
     textHome: {
         fontSize: 16,
@@ -171,8 +196,9 @@ export default style = StyleSheet.create({
         borderBottomLeftRadius: 20,
         borderTopRightRadius: 20,
         fontSize: 20,
-        margin: 20,
         padding: 10,
+        marginLeft: horizontalScale(20),
+        marginRight: horizontalScale(20),
     },
     title: {
         color: '#ffffff',
@@ -180,6 +206,10 @@ export default style = StyleSheet.create({
         fontSize: 23,
         margin: 10,
         textAlign: 'center',
+        marginTop: verticalScale(10),
+        marginBottom: verticalScale(10),
+        marginLeft: horizontalScale(6),
+        fontSize: moderateScale(20),
     },
     viewRule: {
         backgroundColor: '#FEECE2',
@@ -191,9 +221,8 @@ export default style = StyleSheet.create({
     },
     viewInfo: {
         backgroundColor: '#FEECE2',
-        marginBottom: 15,
-        marginTop: 25,
-        paddingBottom: 10,
-        paddingTop: 10,
+        marginTop: verticalScale(5),
+        marginBottom: verticalScale(10),
+        width: horizontalScale(370),
     },
 });

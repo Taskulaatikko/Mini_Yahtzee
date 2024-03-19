@@ -5,12 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-//npm install @react-navigation/native
-//npx expo install react-native-screens react-native-safe-area-context
-//npm install @react-navigation/native-stack
-//npm install @react-navigation/bottom-tabs
-//npm install --save react-native-flex-grid
-
 
 const Tab = createBottomTabNavigator();
 

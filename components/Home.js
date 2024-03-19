@@ -36,12 +36,12 @@ export default function Home({ navigation }) {
                     {!hasPlayerName ?
                         <>
                             <Text style={style.header2}>
-                                Enter your playername </Text>
+                                Enter your player name </Text>
                             <TextInput onChangeText={setPlayerName} autoFocus={true} style={style.textinput}></TextInput>
                             <Pressable
                                 onPress={() => handlePlayerName(playerName)}
                                 style={style.button}>
-                                <Text style={style.buttonText}>OK</Text>
+                                <Text style={style.buttonText}>PLAY</Text>
                             </Pressable>
                         </>
 
@@ -67,14 +67,15 @@ export default function Home({ navigation }) {
                                     for the dices you selected. Only the dices having
                                     the same spot count are calculated. Inside the
                                     game you can not select same points from
-                                    {MIN_SPOT} to {MAX_SPOT} again. </Text>
+                                    {MIN_SPOT} to {MAX_SPOT} again. After the game ends you have to start new game before the 
+                                    score will be saved to scoreboard.</Text>
 
                                 <Text multiline='true' style={style.textHome}>GOAL: To get points as much as possible.
                                     {BONUS_POINTS_LIMIT} points is the limit of
                                     getting bonus which gives you {BONUS_POINTS}
                                     points more. </Text>
                             </View>
-                            <Text style={style.text5}>Good luck, {playerName} !</Text>
+                            <Text multiline='true' style={style.text5}>May the odds be ever in your favor, {playerName}</Text>
                             
                             <Pressable
                                 onPress={() => navigation.navigate('Gameboard', { player: playerName })}

@@ -16,40 +16,31 @@ import style from '../style/style';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { horizontalScale, moderateScale, verticalScale } from '../style/Metrics';
 
 let board = [];
 
-export default Gameboard = ({ navigation, route }) => {
+export default Gameboard = ({ route }) => {
 
     const [gameOngoing, setGameOngoing] = useState(false);
-    const [throwsLeft, setThrowsLeft] = useState(18); // Total throws allowed for one game
+    const [throwsLeft, setThrowsLeft] = useState(18);
     const [totalPoints, setTotalPoints] = useState(0);
     const [playerName, setPlayerName] = useState('');
     const [nbrOfThrowsLeft, setNbrOfThrowsLeft] = useState(NBR_OF_THROWS);
     const [status, setStatus] = useState('Throw dices.');
     const [gameEndStatus, setGameEndStatus] = useState(false);
-    const [dicesThrown, setDicesThrown] = useState(false); // State variable to track whether dices have been thrown
-    //are dices selected or not?
+    const [dicesThrown, setDicesThrown] = useState(false);
     const [selectedDices, setSelectedDices] = useState(new Array(NBR_OF_DICES).fill(false));
-
-    //dice spots (1,2,3,4,5,6) for each dice
     const [diceSpots, setDiceSpots] = useState(new Array(NBR_OF_DICES).fill(0));
-
-    //are dice points selected or not
     const [selectedDicePoints, setSelectedDicePoints] = useState(new Array(MAX_SPOT).fill(false));
     const [dicePointsTotal, setDicePointsTotal] = useState(new Array(MAX_SPOT).fill(0));
-    //const [scores, setScores] = useState([]);
-    //const [bonusPoints, SetBonusPoints] = useState(0);
-    //one way to handle with useeffects
-
     const [roundCount, setRoundCount] = useState(0);
-    // Calculate the total sum of points in the upper section
 
 
     // Function to render the bonus points on the screen
     const renderBonusPoints = () => {
         const bonusPoints = calculateBonusPoints();
-        return <Text style={style.text3}>You need {bonusPoints} more points for the bonus</Text>; //---------------------------------------------------Tämä teksti näkyy
+        return <Text style={style.text3}>You need {bonusPoints} more points to get the bonus</Text>;
     };
 
 
@@ -60,20 +51,6 @@ export default Gameboard = ({ navigation, route }) => {
     }, []);
 
 
-    useEffect(() => {
-        if (nbrOfThrowsLeft === 0 && !gameEndStatus) { //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Ei odota että viimeset pisteet lisätään ennenkuin tekee gameEndin
-            setRoundCount(prevCount => prevCount);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!poistin sulkujen lopusta +1
-            setStatus('Select your points before next throw');
-            selectPointsAfterRound(); // Call the function to store selected points
-        }
-    }, [nbrOfThrowsLeft, gameEndStatus]);
-
-
-
-
-    //this useEffect is for reading scoeboard from the asyncStorage
-    //when user is navigating back to screen (have look at the assigment instructions). trigger here is the
-    //navigation for useEfect
     const saveScore = async (player, points) => {
         try {
             const scores = await AsyncStorage.getItem('@scores');
@@ -87,19 +64,14 @@ export default Gameboard = ({ navigation, route }) => {
         }
     };
 
+
     useEffect(() => {
-        console.log("Selected Dice Points:", selectedDicePoints);
         if (throwsLeft === 0) {
-            console.log("Selected Dice Points:22222", selectedDicePoints);
-            selectPointsAfterRound();
             handleGameEnd();
         }
-    }, [throwsLeft]);
+    });
 
 
-    //this useEffect is for handling the gameflow so that the game does not stop too early
-    //or not continue after it should not.
-    //trigger for here (in teacher solution) is nbrOfThrowsLeft. Another reason for putting the nbrOfThrowsLeft
     const dicesRow = [];
     for (let dice = 0; dice < NBR_OF_DICES; dice++) {
         dicesRow.push(
@@ -131,8 +103,6 @@ export default Gameboard = ({ navigation, route }) => {
 
     const pointsToSelectRow = [];
     for (let diceButton = 0; diceButton < MAX_SPOT; diceButton++) {
-        //console.log ("LUKU: ", diceButton)
-        console.log("Selected Dice Points:", selectedDicePoints);
         pointsToSelectRow.push(
             <Col key={"buttonsRow" + diceButton}>
                 <Pressable
@@ -178,10 +148,10 @@ export default Gameboard = ({ navigation, route }) => {
                 setDicePointsTotal(points);
                 setSelectedDicePoints(selectedPoints);
             } else {
-                setStatus(`You already selected points for ${i + 1}.`);//---------------------------------------------------Tämä teksti näkyy
+                setStatus('You already selected points for this spot.');
             }
         } else {
-            setStatus('Throw 3 times before setting points.');//---------------------------------------------------Tämä teksti näkyy
+            setStatus('Throw 3 times before setting points.');
         }
     }
 
@@ -192,13 +162,12 @@ export default Gameboard = ({ navigation, route }) => {
 
     const throwDices = () => {
         if (gameEndStatus) {
-            setStatus('Game over. Start a new game.'); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------  Ei tulosta tätä minnekkään
+            let finalPoints = getDicePointsTotal();
+            saveScore(playerName, finalPoints);
             startNewGame();
-            //return;
         }
         if (nbrOfThrowsLeft === 0) {
             if (!gameEndStatus) {
-                // Check if points have been selected
                 const pointsSelected = selectedDicePoints.some(selected => selected);
                 if (pointsSelected) {
                     setNbrOfThrowsLeft(NBR_OF_THROWS);
@@ -208,12 +177,12 @@ export default Gameboard = ({ navigation, route }) => {
                     setDiceSpots(newDiceSpots);
                     setDicesThrown(true); // Set dicesThrown to true after throwing dices
                 } else {
-                    setStatus('Select points before throwing dices.');//----------------------------------------------------------------------Tämä teksti näkyy
+                    setStatus('Select points before throwing dices.');
                 }
             } else {
-                setGameEndStatus(false);
-                setNbrOfThrowsLeft(NBR_OF_THROWS);
-                setPlayerName('');
+                //setGameEndStatus(false);
+                //setNbrOfThrowsLeft(NBR_OF_THROWS);
+                //setPlayerName('');
             }
         } else {
             let spots = [...diceSpots];
@@ -226,15 +195,11 @@ export default Gameboard = ({ navigation, route }) => {
             }
             setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
             setDiceSpots(spots);
-            setStatus('Select and throw dices again.');//---------------------------------------------------Tämä teksti näkyy
+            setStatus('Select and throw dices again.');
             setDicesThrown(true); // Set dicesThrown to true after throwing dices
             setThrowsLeft(throwsLeft - 1);
         }
     };
-
-
-
-
 
 
     function getDicePointsTotal() {
@@ -248,35 +213,11 @@ export default Gameboard = ({ navigation, route }) => {
         return total;
     }
 
-    function selectPointsAfterRound() {
-        let selectedPoints = [...selectedDicePoints];
-        if (selectedPoints.length === MAX_SPOT) {
-            let points = [...dicePointsTotal];
-            for (let i = 0; i < MAX_SPOT; i++) {
-                if (selectedPoints[i]) {
-                    selectedPoints[i] = false;
-                    points[i] = 0;
-                }
-            }
-            setSelectedDicePoints(selectedPoints);
-            setDicePointsTotal(points);
-        }
-        else {
-            console.log("Please select all points before finalizing the round.");
-        }
-    }
-
-
-
-
-
-
 
     function getDicePointsColor(i) {
         if (selectedDicePoints[i]) {
             return '#FEECE2';
-        }
-        else {
+        } else {
             return '#FFBE98';
         }
     }
@@ -293,73 +234,38 @@ export default Gameboard = ({ navigation, route }) => {
         const upperSectionTotal = calculateUpperSectionTotal();
         const zero = BONUS_POINTS_LIMIT - upperSectionTotal
         if (zero > 0) {
-            // Positive
             return zero;
         } else {
-            // Negative
             return 0;
         }
     };
 
     const calculateBonusPoints2 = () => {
         const upperSectionTotal = calculateUpperSectionTotal();
-        //return upperSectionTotal >= BONUS_POINTS_LIMIT ? BONUS_POINTS : BONUS_POINTS_LIMIT - upperSectionTotal;
         return upperSectionTotal >= BONUS_POINTS_LIMIT ? BONUS_POINTS : 0;
     };
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TARKISTA TÄMÄ. bonukset pitää lisätä vasta kun peli loppuu.
     const renderBonusPointsMessage = () => {
         if (gameEndStatus) {
             const totalPointsWithBonus = calculateAndAddBonusPoints();
             if (totalPointsWithBonus >= BONUS_POINTS_LIMIT) {
-                return <Text style={style.text}>Congrats! {BONUS_POINTS} bonus points added</Text>;//---------------------------------------------------Tämä teksti näkyy
+                return <Text style={style.text}>Congrats! You earned {BONUS_POINTS} bonus points!</Text>;
             }
         }
     };
 
-    // Calculate the bonus points and add them to the total points after the game ends
     const calculateAndAddBonusPoints = () => {
         const bonusPoints = calculateBonusPoints2();
         const totalPointsWithBonus = getDicePointsTotal() + bonusPoints;
         return totalPointsWithBonus;
     };
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 
-    // Inside the useEffect hook when the game ends Mikko kommentoitu pois, koska ei tarvita ehkä.
-    /* useEffect(() => {
-         if (gameEndStatus) {
-             handleGameEnd();
-             startNewGame(); // Call startNewGame when the game ends
-         }
-     }, [gameEndStatus]);
-    */
-    // KUN HEITTOJA EI OLE EÄNÄÄ JÄLJELLÄ
     const handleGameEnd = () => {
-        // Add bonus points to the total points
-        // You can perform any other end-of-game logic here
-        // For example, navigating to the scoreboard screen or displaying a game over message
-        setStatus('Game over. Choose last points.');//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!--------------------------------------- Tämän tulostaa kun peli loppuu liian aikasin eli ennen viimesen pisteen merkkaamista
-        let finalPoints = getDicePointsTotal();
-        saveScore(playerName, finalPoints);
+        setStatus('Choose last points and press button one last time.');
         setGameEndStatus(true);
     };
-    /*const handleGameEnd = () => {
-        console.log("Handle Game End called");
-        
-        let finalPoints = getDicePointsTotal();
-        console.log("Final Points:", finalPoints);
-        saveScore(playerName, finalPoints);
-        setGameEndStatus(true);
-        setStatus('Game over. Start a new game.');
-    
-        if (throwsLeft === 0  ) { // Only end the game if all throws have been completed
-    
-        }
-    };*/
 
 
-
-    // Function to start a new game
     const startNewGame = () => {
         setThrowsLeft(18);
         setTotalPoints(0);
@@ -372,9 +278,8 @@ export default Gameboard = ({ navigation, route }) => {
         setSelectedDicePoints(new Array(MAX_SPOT).fill(false));
         setDicePointsTotal(new Array(MAX_SPOT).fill(0));
         setRoundCount(0);
-        // Preserve the player name if it has already been set
         if (!playerName) {
-            setPlayerName(true); // Use the default player name if available !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Nollaa silti pelaajanimen kun uusi kierros alkaa. palauttaa nimen kun sitä seuraava kierros alkaa
+            setPlayerName(true);
         }
         setGameOngoing(true);
     };
