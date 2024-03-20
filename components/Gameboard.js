@@ -145,6 +145,7 @@ export default Gameboard = ({ route }) => {
                 setSelectedDicePoints(selectedPoints);
                 if (nbrOfDices > 0) {
                     setAllowToSelectDicePoints(false);
+                    setSelectedDices(new Array(NBR_OF_DICES).fill(false));
                 }
             } else {
                 setStatus('You already selected points for this spot.');
@@ -160,7 +161,6 @@ export default Gameboard = ({ route }) => {
     }
 
 
-
     const throwDices = () => {
         if (gameEndStatus) {
             let finalPoints = getDicePointsTotal();
@@ -171,9 +171,10 @@ export default Gameboard = ({ route }) => {
             if (!gameEndStatus) {
                 const pointsSelected = selectedDicePoints.some(selected => selected);
                 if (pointsSelected) {
-                    setNbrOfThrowsLeft(NBR_OF_THROWS);
                     setSelectedDices(new Array(NBR_OF_DICES).fill(false));
                     setSelectedDicePoints(new Array(MAX_SPOT).fill(false));
+                    const newDiceSpots = Array.from({ length: NBR_OF_DICES }, () => Math.floor(Math.random() * 6) + 1);
+                    setDiceSpots(newDiceSpots);
                     let spots = [...diceSpots];
                     for (let i = 0; i < NBR_OF_DICES; i++) {
                         if (!selectedDices[i]) {
@@ -182,10 +183,10 @@ export default Gameboard = ({ route }) => {
                             spots[i] = randomNumber;
                         }
                     }
-                    setNbrOfThrowsLeft(2);
                     setDiceSpots(spots);
+                    setNbrOfThrowsLeft(2);
                     setStatus('Select and throw dices again.');
-                    setDicesThrown(true); 
+                    setDicesThrown(true);
                     setThrowsLeft(throwsLeft - 1);
                     setAllowToSelectDicePoints(true);
                 } else {
@@ -204,7 +205,7 @@ export default Gameboard = ({ route }) => {
             setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
             setDiceSpots(spots);
             setStatus('Select and throw dices again.');
-            setDicesThrown(true); 
+            setDicesThrown(true);
             setThrowsLeft(throwsLeft - 1);
             setAllowToSelectDicePoints(true);
         }
