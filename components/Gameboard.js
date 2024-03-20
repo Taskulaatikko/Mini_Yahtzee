@@ -16,12 +16,12 @@ import style from '../style/style';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { horizontalScale, moderateScale, verticalScale } from '../style/Metrics';
 
 let board = [];
 
 export default Gameboard = ({ route }) => {
 
+    const [allowToSelectDicePoints, setAllowToSelectDicePoints] = useState(true);
     const [gameOngoing, setGameOngoing] = useState(false);
     const [throwsLeft, setThrowsLeft] = useState(18);
     const [totalPoints, setTotalPoints] = useState(0);
@@ -37,7 +37,6 @@ export default Gameboard = ({ route }) => {
     const [roundCount, setRoundCount] = useState(0);
 
 
-    // Function to render the bonus points on the screen
     const renderBonusPoints = () => {
         const bonusPoints = calculateBonusPoints();
         return <Text style={style.text3}>You need {bonusPoints} more points to get the bonus</Text>;
@@ -55,7 +54,7 @@ export default Gameboard = ({ route }) => {
         try {
             const scores = await AsyncStorage.getItem('@scores');
             let topScores = scores ? JSON.parse(scores) : [];
-            const currentDate = new Date().toLocaleString(); // Get the current date and time
+            const currentDate = new Date().toLocaleString();
             topScores.push({ player: player, points: points, date: currentDate });
             topScores.sort((a, b) => b.points - a.points);
             await AsyncStorage.setItem('@scores', JSON.stringify(topScores));
@@ -82,7 +81,7 @@ export default Gameboard = ({ route }) => {
                     <MaterialCommunityIcons
                         name={board[dice]}
                         key={'dice' + dice}
-                        size={50}
+                        size={55}
                         color={getDiceColor(dice)}>
                     </MaterialCommunityIcons>
                 </Pressable>
@@ -94,7 +93,7 @@ export default Gameboard = ({ route }) => {
     for (let spot = 0; spot < MAX_SPOT; spot++) {
         pointsRow.push(
             <Col key={"pointsRow" + spot}>
-                <Text key={"pointsRow" + spot}>
+                <Text key={"pointsRow" + spot} style={style.pointNum}>
                     {getSpotTotal(spot)}
                 </Text>
             </Col>
@@ -112,7 +111,7 @@ export default Gameboard = ({ route }) => {
                     <MaterialCommunityIcons
                         name={"numeric-" + (diceButton + 1) + "-circle"}
                         key={"buttonsRow" + diceButton}
-                        size={35}
+                        size={38}
                         color={getDicePointsColor(diceButton)}
                     >
                     </MaterialCommunityIcons>
@@ -127,9 +126,6 @@ export default Gameboard = ({ route }) => {
             dices[i] = selectedDices[i] ? false : true;
             setSelectedDices(dices);
         }
-        /*else {
-            setStatus('You have to throw dices first');//---------------------------------------------------Tämä teksti EI näy
-        }*/
     }
 
     function getDiceColor(i) {
@@ -137,7 +133,7 @@ export default Gameboard = ({ route }) => {
     }
 
     const selectDicePoints = (i) => {
-        if (nbrOfThrowsLeft === 0) {
+        if (nbrOfThrowsLeft === 0 && allowToSelectDicePoints) {
             if (!selectedDicePoints[i] && dicePointsTotal[i] === 0) {
                 let selectedPoints = [...selectedDicePoints];
                 let points = [...dicePointsTotal];
@@ -147,6 +143,9 @@ export default Gameboard = ({ route }) => {
                 selectedPoints[i] = true;
                 setDicePointsTotal(points);
                 setSelectedDicePoints(selectedPoints);
+                if (nbrOfDices > 0) {
+                    setAllowToSelectDicePoints(false);
+                }
             } else {
                 setStatus('You already selected points for this spot.');
             }
@@ -155,9 +154,11 @@ export default Gameboard = ({ route }) => {
         }
     }
 
+
     function getSpotTotal(i) {
         return dicePointsTotal[i];
     }
+
 
 
     const throwDices = () => {
@@ -173,16 +174,23 @@ export default Gameboard = ({ route }) => {
                     setNbrOfThrowsLeft(NBR_OF_THROWS);
                     setSelectedDices(new Array(NBR_OF_DICES).fill(false));
                     setSelectedDicePoints(new Array(MAX_SPOT).fill(false));
-                    const newDiceSpots = Array.from({ length: NBR_OF_DICES }, () => Math.floor(Math.random() * 6) + 1);
-                    setDiceSpots(newDiceSpots);
-                    setDicesThrown(true); // Set dicesThrown to true after throwing dices
+                    let spots = [...diceSpots];
+                    for (let i = 0; i < NBR_OF_DICES; i++) {
+                        if (!selectedDices[i]) {
+                            let randomNumber = Math.floor(Math.random() * 6 + 1);
+                            board[i] = 'dice-' + randomNumber;
+                            spots[i] = randomNumber;
+                        }
+                    }
+                    setNbrOfThrowsLeft(2);
+                    setDiceSpots(spots);
+                    setStatus('Select and throw dices again.');
+                    setDicesThrown(true); 
+                    setThrowsLeft(throwsLeft - 1);
+                    setAllowToSelectDicePoints(true);
                 } else {
                     setStatus('Select points before throwing dices.');
                 }
-            } else {
-                //setGameEndStatus(false);
-                //setNbrOfThrowsLeft(NBR_OF_THROWS);
-                //setPlayerName('');
             }
         } else {
             let spots = [...diceSpots];
@@ -196,8 +204,9 @@ export default Gameboard = ({ route }) => {
             setNbrOfThrowsLeft(nbrOfThrowsLeft - 1);
             setDiceSpots(spots);
             setStatus('Select and throw dices again.');
-            setDicesThrown(true); // Set dicesThrown to true after throwing dices
+            setDicesThrown(true); 
             setThrowsLeft(throwsLeft - 1);
+            setAllowToSelectDicePoints(true);
         }
     };
 
@@ -214,9 +223,12 @@ export default Gameboard = ({ route }) => {
     }
 
 
+
     function getDicePointsColor(i) {
-        if (selectedDicePoints[i]) {
+        if (getSpotTotal(i) != 0) {
             return '#FEECE2';
+        } if (selectedDicePoints[i]) {
+            return '#fa483b';
         } else {
             return '#FFBE98';
         }
@@ -261,7 +273,7 @@ export default Gameboard = ({ route }) => {
     };
 
     const handleGameEnd = () => {
-        setStatus('Choose last points and press button one last time.');
+        setStatus('End of a game. Choose your last points.');
         setGameEndStatus(true);
     };
 
@@ -295,7 +307,7 @@ export default Gameboard = ({ route }) => {
                             <Row>{dicesRow}</Row>
                         </Container>
                     ) : (
-                        <FontAwesome6 name="dice" size={50} color="black" style={style.icon} />
+                        <FontAwesome6 name="dice" size={55} color="#FFBE98" style={style.icon} />
                     )}
                     <Text style={style.text}>{status}</Text>
                     <Text style={style.text2}>Throws left: {nbrOfThrowsLeft}</Text>
@@ -311,7 +323,6 @@ export default Gameboard = ({ route }) => {
                         style={style.button}>
                         <Text style={style.buttonText}>THROW DICES</Text>
                     </Pressable>
-
                     <View style={style.viewInfo}>
                         <Text style={style.textTotal}>Total: {getDicePointsTotal()}</Text>
                         {gameEndStatus && renderBonusPointsMessage()}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Pressable } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import style from '../style/style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
@@ -76,7 +76,7 @@ export default function Scoreboard({ navigation }) {
         <ScrollView>
             <Header style={style.header} />
             <View>
-                <MaterialIcons name="view-list" size={50} color="black" style={style.icon} />
+                <MaterialCommunityIcons name="trophy" size={50} color="#FFBE98" style={style.icon} />
                 <Text style={style.text6}>Top 5 Scores</Text>
                 {topScores.length === 0 ? (
                     <Text style={style.text}>{status}</Text>

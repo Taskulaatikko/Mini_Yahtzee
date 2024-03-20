@@ -38,10 +38,10 @@ export default function App() {
           tabBarInactiveTintColor: '#FFBE98',
         })}
       >
-        <Tab.Screen name="Home" component={Home}
+        <Tab.Screen  name="Home" component={Home}
           options={{tabBarStyle: {display: 'none'}}} />
-        <Tab.Screen name="Gameboard" component={Gameboard} />
-        <Tab.Screen name="Scoreboard" component={Scoreboard} />
+        <Tab.Screen  name="Gameboard" component={Gameboard} />
+        <Tab.Screen  name="Scoreboard" component={Scoreboard} />
       </Tab.Navigator>
     </NavigationContainer>
   );

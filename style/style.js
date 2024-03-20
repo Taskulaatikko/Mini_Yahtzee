@@ -118,9 +118,17 @@ export default style = StyleSheet.create({
     icon: {
         textAlign: 'center',
     },
+    pointNum:{
+        fontSize: 20,
+        marginLeft: 8,
+    },
     row: {
         marginTop: 20,
         padding: 10,
+    },
+    tabStyle: {
+        alignContent: 'center',
+        alignItems: 'center',
     },
     text: {
         fontSize: 22,
@@ -163,8 +171,8 @@ export default style = StyleSheet.create({
     text5: {
         fontSize: 20,
         textAlign: 'center',
-        marginTop: verticalScale(20),
-        fontSize: moderateScale(19),
+        marginTop: verticalScale(22),
+        fontSize: moderateScale(21),
     },
     text6: {
         fontSize: 20,
@@ -223,6 +231,6 @@ export default style = StyleSheet.create({
         backgroundColor: '#FEECE2',
         marginTop: verticalScale(5),
         marginBottom: verticalScale(10),
-        width: horizontalScale(370),
+        width: horizontalScale(375),
     },
 });
